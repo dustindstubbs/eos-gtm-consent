@@ -7,7 +7,7 @@
 /*
 Plugin Name: GTM Consent
 Description: A simple solution for managing user consent for a GTM container.
-Version: 0.1.0
+Version: 0.1.1
 Author: Dustin Stubbs
 License GPLv2 or later
 */
@@ -49,47 +49,31 @@ class GTMConsent
 		$consentContainer = get_option('gtm_consent_option_name')['container_0'];
 		$consentDisclaimer = get_option('gtm_consent_option_name')['disclaimer_1'];
 
-		// Generate GTM consent popup if cookie does not exist
-		if ( !isset($_COOKIE['gtm-consent']) ) {
-			echo "
-			<div id='gc-popup' class='card gc-card position-fixed bg-dark text-light p-3 rounded start-0 bottom-0 m-sm-2'>
-				<div class='card-body'>
-					$consentDisclaimer
-				</div>
-				<div class='border-0 d-flex'>
-					<button id='reject' class='gc-btn-reject flex-fill btn btn-dark' onclick='scriptReject()' >Only Essential</button>
-					<button id='accept' class='gc-btn-accept flex-fill btn btn-primary ms-2' onclick='scriptAccept()'>Accept All</button>
-				</div>
-			</div>
-			";
-		}
-		
+		// Generate GTM consent popup
 		echo "
+		<div id='gc-popup' class='d-none card gc-card position-fixed bg-dark text-light p-3 rounded start-0 bottom-0 m-sm-2'>
+			<div class='card-body'>
+				$consentDisclaimer
+			</div>
+			<div class='border-0 d-flex'>
+				<button id='reject' class='gc-btn-reject flex-fill btn btn-dark' onclick='scriptReject()' >Only Essential</button>
+				<button id='accept' class='gc-btn-accept flex-fill btn btn-primary ms-2' onclick='scriptAccept()'>Accept All</button>
+			</div>
+		</div>
+
 		<!-- Google tag (gtag.js) -->
 		<script async src='https://www.googletagmanager.com/gtag/js?id=$consentContainer'></script>
 		<script>
 			window.dataLayer = window.dataLayer || [];
-			function gtag(){dataLayer.push(arguments);}";
-			
-			if (!isset($_COOKIE['gtm-consent']) || $_COOKIE['gtm-consent'] == "rejected"){
-			echo "
+			function gtag(){dataLayer.push(arguments);}
+
 			gtag('consent', 'default', {
 				'ad_storage': 'denied',
 				'ad_personalization': 'denied',
 				'ad_user_data': 'denied',
 				'analytics_storage': 'denied'
-			});";
-			}else{
-			echo "
-			gtag('consent', 'default', {
-				'ad_storage': 'granted',
-				'ad_personalization': 'granted',
-				'ad_user_data': 'granted',
-				'analytics_storage': 'granted'
-			});";
-			}
+			});
 
-			echo "
 			gtag('js', new Date());
 			gtag('config', '$consentContainer');
 		</script>
