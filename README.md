@@ -1,5 +1,5 @@
-# Script Consent
-A WordPress custom plugin for managing consent to cookie applying scripts.
+# GTM Consent
+A WordPress custom plugin for managing consent to a GTM Container.
 
 ## Installation
 - Clone this repo into your /wp-content/plugins/ folder

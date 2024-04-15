@@ -52,13 +52,13 @@ class GTMConsent
 		// Generate GTM consent popup if cookie does not exist
 		if ( !isset($_COOKIE['gtm-consent']) ) {
 			echo "
-			<div id='sc-popup' class='card sc-card position-fixed bg-dark text-light p-4 rounded start-0 bottom-0 m-sm-2'>
+			<div id='gc-popup' class='card gc-card position-fixed bg-dark text-light p-3 rounded start-0 bottom-0 m-sm-2'>
 				<div class='card-body'>
 					$consentDisclaimer
 				</div>
-				<div class='card-footer border-0 d-flex'>
-					<button id='reject' class='sc-btn-reject flex-fill btn btn-secondary' onclick='scriptReject()' >Only Essential</button>
-					<button id='accept' class='sc-btn-accept flex-fill btn btn-primary ms-2' onclick='scriptAccept()'>Accept All</button>
+				<div class='border-0 d-flex'>
+					<button id='reject' class='gc-btn-reject flex-fill btn btn-dark' onclick='scriptReject()' >Only Essential</button>
+					<button id='accept' class='gc-btn-accept flex-fill btn btn-primary ms-2' onclick='scriptAccept()'>Accept All</button>
 				</div>
 			</div>
 			";
