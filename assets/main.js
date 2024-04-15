@@ -1,6 +1,6 @@
 function scriptAccept() {
 	document.cookie = 'gtm-consent=accepted; path=/; max-age=604800';
-	document.getElementById("sc-popup").classList.add("d-none");
+	document.getElementById("gc-popup").classList.add("d-none");
 	
 	gtag('consent', 'update', {
 		'ad_storage': 'granted',
@@ -14,5 +14,5 @@ function scriptAccept() {
 
 function scriptReject() {
 	document.cookie = 'gtm-consent=rejected; path=/; max-age=604800';
-	document.getElementById("sc-popup").classList.add("d-none");
+	document.getElementById("gc-popup").classList.add("d-none");
 }
