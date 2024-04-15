@@ -3,3 +3,7 @@
 		max-width:500px
 	}
 }
+
+.gc-card{
+	z-index:400;
+}

@@ -17,7 +17,7 @@ class GTMConsentSettings {
 			'GTM Consent', // page_title
 			'GTM Consent', // menu_title
 			'manage_options', // capability
-			'script-consent', // menu_slug
+			'gtm-consent', // menu_slug
 			array( $this, 'gtm_consent_create_admin_page' ) // function
 		);
 	}
