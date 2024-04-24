@@ -7,7 +7,7 @@
 /*
 Plugin Name: GTM Consent
 Description: A simple solution for managing user consent for a GTM container.
-Version: 0.1.1
+Version: 0.1.3
 Author: Dustin Stubbs
 License GPLv2 or later
 */
@@ -35,6 +35,8 @@ class GTMConsent
 
 		add_shortcode( 'consent_popup', array( $this, 'consentPopup' ) );
 
+		add_shortcode( 'consent_buttons', array( $this, 'consentButtons' ) );
+
 	}
 
 	public function editVerse() {
@@ -48,15 +50,22 @@ class GTMConsent
 	public function consentPopup() {
 		$consentContainer = get_option('gtm_consent_option_name')['container_0'];
 		$consentDisclaimer = get_option('gtm_consent_option_name')['disclaimer_1'];
+		$consentBackground = get_option('gtm_consent_option_name')['background_2'];
+		if ($consentBackground == 'light') {
+			$consentTheme = "bg-white text-dark";
+		}else{
+			$consentTheme = "bg-dark text-white";
+		}
+		 
 
 		// Generate GTM consent popup
 		echo "
-		<div id='gc-popup' class='d-none card gc-card position-fixed bg-dark text-light p-3 rounded start-0 bottom-0 m-sm-2'>
+		<div id='gc-popup' class='d-none card gc-card position-fixed $consentTheme p-3 rounded start-0 bottom-0 m-sm-2'>
 			<div class='card-body'>
 				$consentDisclaimer
 			</div>
 			<div class='border-0 d-flex'>
-				<button id='reject' class='gc-btn-reject flex-fill btn btn-dark' onclick='scriptReject()' >Only Essential</button>
+				<button id='reject' class='gc-btn-reject flex-fill btn btn-$consentBackground' onclick='scriptReject()'>Only Essential</button>
 				<button id='accept' class='gc-btn-accept flex-fill btn btn-primary ms-2' onclick='scriptAccept()'>Accept All</button>
 			</div>
 		</div>
@@ -77,6 +86,15 @@ class GTMConsent
 			gtag('js', new Date());
 			gtag('config', '$consentContainer');
 		</script>
+		";
+	}
+
+	public function consentButtons() {
+
+		// Place consent buttons
+		echo "
+		<button id='reject' class='gc-btn-reject flex-fill btn btn-dark' onclick='scriptReject()'>Only Essential</button>
+		<button id='accept' class='gc-btn-accept flex-fill btn btn-primary ms-2' onclick='scriptAccept()'>Accept All</button>
 		";
 	}
 

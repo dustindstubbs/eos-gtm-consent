@@ -69,6 +69,14 @@ class GTMConsentSettings {
 			'script-consent-admin', // page
 			'gtm_consent_setting_section' // section
 		);
+
+		add_settings_field(
+			'background_2', // id
+			'Background', // title
+			array( $this, 'background_2_callback' ), // callback
+			'script-consent-admin', // page
+			'gtm_consent_setting_section' // section
+		);
 	}
 
 	public function gtm_consent_sanitize($input) {
@@ -79,6 +87,10 @@ class GTMConsentSettings {
 
 		if ( isset( $input['disclaimer_1'] ) ) {
 			$sanitary_values['disclaimer_1'] = $input['disclaimer_1'];
+		}
+
+		if ( isset( $input['background_2'] ) ) {
+			$sanitary_values['background_2'] = $input['background_2'];
 		}
 
 		return $sanitary_values;
@@ -102,6 +114,13 @@ class GTMConsentSettings {
 		);
 	}
 
+	public function background_2_callback() {
+		?> <fieldset><?php $checked = ( isset( $this->gtm_consent_options['background_2'] ) && $this->gtm_consent_options['background_2'] === 'dark' ) ? 'checked' : '' ; ?>
+		<label for="background_2-0"><input type="radio" name="gtm_consent_option_name[background_2]" id="background_2-0" value="dark" <?php echo $checked; ?>> Dark</label><br>
+		<?php $checked = ( isset( $this->gtm_consent_options['background_2'] ) && $this->gtm_consent_options['background_2'] === 'light' ) ? 'checked' : '' ; ?>
+		<label for="background_2-1"><input type="radio" name="gtm_consent_option_name[background_2]" id="background_2-1" value="light" <?php echo $checked; ?>> Light</label></fieldset> <?php
+	}
+
 }
 if ( is_admin() )
 	$gtm_consent = new GTMConsentSettings();
@@ -111,4 +130,6 @@ if ( is_admin() )
  * $gtm_consent_options = get_option( 'gtm_consent_option_name' ); // Array of All Options
  * $container_0 = $gtm_consent_options['container_0']; // Container ID
  * $disclaimer_1 = $gtm_consent_options['disclaimer_1']; // Disclaimer
+ * $background_2 = $gtm_consent_options['background_2']; // Background
+
  */
