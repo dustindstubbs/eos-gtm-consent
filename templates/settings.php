@@ -27,7 +27,15 @@ class GTMConsentSettings {
 
 		<div class="wrap">
 			<h2>GTM Consent</h2>
-			<p>Use the shortcode <b>[consent_popup]</b> to use this plugin.</p>
+			<p>
+				Add the shortcode <b>[consent_popup]</b> to use this plugin.<br>
+				Add the shortcode <b>[consent_buttons]</b> to display consent buttons on any page.
+			</p>
+			<p>The following css classes are available for customization:<br>
+			- <b>gc-card</b><br>
+			- <b>gc-btn-reject</b><br>
+			- <b>gc-btn-accept</b>
+			</p>
 			<?php settings_errors(); ?>
 
 			<form method="post" action="options.php">
@@ -63,17 +71,25 @@ class GTMConsentSettings {
 		);
 
 		add_settings_field(
-			'disclaimer_1', // id
-			'Disclaimer', // title
-			array( $this, 'disclaimer_1_callback' ), // callback
+			'accept_by_default_1', // id
+			'Accept by default', // title
+			array( $this, 'accept_by_default_1_callback' ), // callback
 			'script-consent-admin', // page
 			'gtm_consent_setting_section' // section
 		);
 
 		add_settings_field(
-			'background_2', // id
+			'disclaimer_2', // id
+			'Disclaimer', // title
+			array( $this, 'disclaimer_2_callback' ), // callback
+			'script-consent-admin', // page
+			'gtm_consent_setting_section' // section
+		);
+
+		add_settings_field(
+			'background_3', // id
 			'Background', // title
-			array( $this, 'background_2_callback' ), // callback
+			array( $this, 'background_3_callback' ), // callback
 			'script-consent-admin', // page
 			'gtm_consent_setting_section' // section
 		);
@@ -85,12 +101,16 @@ class GTMConsentSettings {
 			$sanitary_values['container_0'] = $input['container_0'];
 		}
 
-		if ( isset( $input['disclaimer_1'] ) ) {
-			$sanitary_values['disclaimer_1'] = $input['disclaimer_1'];
+		if ( isset( $input['accept_by_default_1'] ) ) {
+			$sanitary_values['accept_by_default_1'] = $input['accept_by_default_1'];
 		}
 
-		if ( isset( $input['background_2'] ) ) {
-			$sanitary_values['background_2'] = $input['background_2'];
+		if ( isset( $input['disclaimer_2'] ) ) {
+			$sanitary_values['disclaimer_2'] = $input['disclaimer_2'];
+		}
+
+		if ( isset( $input['background_3'] ) ) {
+			$sanitary_values['background_3'] = $input['background_3'];
 		}
 
 		return $sanitary_values;
@@ -107,18 +127,25 @@ class GTMConsentSettings {
 		);
 	}
 
-	public function disclaimer_1_callback() {
+	public function accept_by_default_1_callback() {
 		printf(
-			'<textarea class="large-text" rows="2" name="gtm_consent_option_name[disclaimer_1]" id="disclaimer_1">%s</textarea>',
-			isset( $this->gtm_consent_options['disclaimer_1'] ) ? esc_attr( $this->gtm_consent_options['disclaimer_1']) : ''
+			'<input type="checkbox" name="gtm_consent_option_name[accept_by_default_1]" id="accept_by_default_1" value="accept_by_default_1" %s> <label for="accept_by_default_1">(Not recommended)</label>',
+			( isset( $this->gtm_consent_options['accept_by_default_1'] ) && $this->gtm_consent_options['accept_by_default_1'] === 'accept_by_default_1' ) ? 'checked' : ''
 		);
 	}
 
-	public function background_2_callback() {
-		?> <fieldset><?php $checked = ( isset( $this->gtm_consent_options['background_2'] ) && $this->gtm_consent_options['background_2'] === 'dark' ) ? 'checked' : '' ; ?>
-		<label for="background_2-0"><input type="radio" name="gtm_consent_option_name[background_2]" id="background_2-0" value="dark" <?php echo $checked; ?>> Dark</label><br>
-		<?php $checked = ( isset( $this->gtm_consent_options['background_2'] ) && $this->gtm_consent_options['background_2'] === 'light' ) ? 'checked' : '' ; ?>
-		<label for="background_2-1"><input type="radio" name="gtm_consent_option_name[background_2]" id="background_2-1" value="light" <?php echo $checked; ?>> Light</label></fieldset> <?php
+	public function disclaimer_2_callback() {
+		printf(
+			'<textarea class="large-text" rows="2" name="gtm_consent_option_name[disclaimer_2]" id="disclaimer_2">%s</textarea>',
+			isset( $this->gtm_consent_options['disclaimer_2'] ) ? esc_attr( $this->gtm_consent_options['disclaimer_2']) : ''
+		);
+	}
+
+	public function background_3_callback() {
+		?> <fieldset><?php $checked = ( isset( $this->gtm_consent_options['background_3'] ) && $this->gtm_consent_options['background_3'] === 'dark' ) ? 'checked' : '' ; ?>
+		<label for="background_3-0"><input type="radio" name="gtm_consent_option_name[background_3]" id="background_3-0" value="dark" <?php echo $checked; ?>> Dark</label><br>
+		<?php $checked = ( isset( $this->gtm_consent_options['background_3'] ) && $this->gtm_consent_options['background_3'] === 'light' ) ? 'checked' : '' ; ?>
+		<label for="background_3-1"><input type="radio" name="gtm_consent_option_name[background_3]" id="background_3-1" value="light" <?php echo $checked; ?>> Light</label></fieldset> <?php
 	}
 
 }
@@ -129,7 +156,8 @@ if ( is_admin() )
  * Retrieve this value with:
  * $gtm_consent_options = get_option( 'gtm_consent_option_name' ); // Array of All Options
  * $container_0 = $gtm_consent_options['container_0']; // Container ID
- * $disclaimer_1 = $gtm_consent_options['disclaimer_1']; // Disclaimer
- * $background_2 = $gtm_consent_options['background_2']; // Background
+ * $accept_by_default_1 = $gtm_consent_options['accept_by_default_1']; // Accept by default
+ * $disclaimer_2 = $gtm_consent_options['disclaimer_2']; // Disclaimer
+ * $background_3 = $gtm_consent_options['background_3']; // Background
 
  */

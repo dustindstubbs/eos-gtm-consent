@@ -7,7 +7,7 @@
 /*
 Plugin Name: GTM Consent
 Description: A simple solution for managing user consent for a GTM container.
-Version: 0.1.3
+Version: 0.2.0
 Author: Dustin Stubbs
 License GPLv2 or later
 */
@@ -49,53 +49,68 @@ class GTMConsent
 
 	public function consentPopup() {
 		$consentContainer = get_option('gtm_consent_option_name')['container_0'];
-		$consentDisclaimer = get_option('gtm_consent_option_name')['disclaimer_1'];
-		$consentBackground = get_option('gtm_consent_option_name')['background_2'];
-		if ($consentBackground == 'light') {
-			$consentTheme = "bg-white text-dark";
-		}else{
-			$consentTheme = "bg-dark text-white";
+		if ( $consentContainer != null ) {
+			$consentDisclaimer = get_option('gtm_consent_option_name')['disclaimer_2'];
+			$consentAcceptDefault = get_option('gtm_consent_option_name')['accept_by_default_1'];
+			$consentBackground = get_option('gtm_consent_option_name')['background_3'];
+			$text = "";
+
+			if ( $consentAcceptDefault != true ) {
+				$consentAction = 'denied';
+			}else{
+				$consentAction = 'granted';
+			}
+
+			if ( $consentDisclaimer != '' ) {
+			// Generate GTM consent popup if discalimer text exists
+			$text .= "
+			<div id='gc-popup' class='d-none card gc-card position-fixed ".(( $consentBackground == 'light' ) ? 'bg-white text-dark' : 'bg-dark text-white')." p-3 rounded start-0 bottom-0 m-sm-2'>
+				<div class='card-body'>
+					$consentDisclaimer
+				</div>
+				<div class='border-0 d-flex'>
+					<button id='reject' class='gc-btn-reject flex-fill btn btn-".(( $consentBackground == 'light' ) ? 'dark' : 'light')."' onclick='scriptReject()'>Only Essential</button>
+					<button id='accept' class='gc-btn-accept flex-fill btn btn-primary ms-2' onclick='scriptAccept()'>Accept All</button>
+				</div>
+			</div>";
+			}
+
+			$text .= "
+			<!-- Google tag (gtag.js) -->
+			<script async src='https://www.googletagmanager.com/gtag/js?id=$consentContainer'></script>
+			<script>
+				window.dataLayer = window.dataLayer || [];
+				function gtag(){dataLayer.push(arguments);}
+
+				gtag('consent', 'default', {
+					'ad_storage': '$consentAction',
+					'ad_personalization': '$consentAction',
+					'ad_user_data': '$consentAction',
+					'analytics_storage': '$consentAction'
+				});
+
+				gtag('js', new Date());
+				gtag('config', '$consentContainer');
+			</script>
+			";
+
+			return $text;
 		}
-		 
-
-		// Generate GTM consent popup
-		echo "
-		<div id='gc-popup' class='d-none card gc-card position-fixed $consentTheme p-3 rounded start-0 bottom-0 m-sm-2'>
-			<div class='card-body'>
-				$consentDisclaimer
-			</div>
-			<div class='border-0 d-flex'>
-				<button id='reject' class='gc-btn-reject flex-fill btn btn-$consentBackground' onclick='scriptReject()'>Only Essential</button>
-				<button id='accept' class='gc-btn-accept flex-fill btn btn-primary ms-2' onclick='scriptAccept()'>Accept All</button>
-			</div>
-		</div>
-
-		<!-- Google tag (gtag.js) -->
-		<script async src='https://www.googletagmanager.com/gtag/js?id=$consentContainer'></script>
-		<script>
-			window.dataLayer = window.dataLayer || [];
-			function gtag(){dataLayer.push(arguments);}
-
-			gtag('consent', 'default', {
-				'ad_storage': 'denied',
-				'ad_personalization': 'denied',
-				'ad_user_data': 'denied',
-				'analytics_storage': 'denied'
-			});
-
-			gtag('js', new Date());
-			gtag('config', '$consentContainer');
-		</script>
-		";
 	}
 
 	public function consentButtons() {
+		$consentContainer = get_option('gtm_consent_option_name')['container_0'];
+		if ( $consentContainer != null ) {
+			$consentBackground = get_option('gtm_consent_option_name')['background_3'];
+			$text = "
+			<div id='gc-btn-box' class='border-0 d-flex'>
+				<button id='reject' class='gc-btn-reject flex-fill btn btn-".(( $consentBackground == 'light' ) ? 'dark' : 'light')."' onclick='scriptReject()'>Only Essential</button>
+				<button id='accept' class='gc-btn-accept flex-fill btn btn-primary ms-2' onclick='scriptAccept()'>Accept All</button>
+			</div>
+			";
 
-		// Place consent buttons
-		echo "
-		<button id='reject' class='gc-btn-reject flex-fill btn btn-dark' onclick='scriptReject()'>Only Essential</button>
-		<button id='accept' class='gc-btn-accept flex-fill btn btn-primary ms-2' onclick='scriptAccept()'>Accept All</button>
-		";
+			return $text;
+		}
 	}
 
 	public function settingsLink( $links ) {
