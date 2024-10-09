@@ -7,7 +7,7 @@
 /*
 Plugin Name: GTM Consent
 Description: A simple solution for managing user consent for a GTM container.
-Version: 0.2.0
+Version: 0.1.3
 Author: Dustin Stubbs
 License GPLv2 or later
 */
@@ -37,7 +37,41 @@ class GTMConsent
 
 		add_shortcode( 'consent_buttons', array( $this, 'consentButtons' ) );
 
+		add_action('wp_head', array( $this, 'headScript' ) );
+
+
 	}
+
+	function headScript(){
+		$consentContainer = get_option('gtm_consent_option_name')['container_0'];
+		if ( $consentContainer != null ) {
+			$consentAcceptDefault = get_option('gtm_consent_option_name')['accept_by_default_1'];
+
+			if ( $consentAcceptDefault != true ) {
+				$consentAction = 'denied';
+			}else{
+				$consentAction = 'granted';
+			}
+			?>
+			<!-- Google tag (gtag.js) -->
+			<script async src='https://www.googletagmanager.com/gtag/js?id=<?php echo $consentContainer ?>'></script>
+			<script>
+				window.dataLayer = window.dataLayer || [];
+				function gtag(){dataLayer.push(arguments);}
+
+				gtag('consent', 'default', {
+					'ad_storage': '<?php echo $consentAction ?>',
+					'ad_personalization': '<?php echo $consentAction ?>',
+					'ad_user_data': '<?php echo $consentAction ?>',
+					'analytics_storage': '<?php echo $consentAction ?>'
+				});
+
+				gtag('js', new Date());
+				gtag('config', '<?php echo $consentContainer ?>');
+			</script>
+			<?php
+		}
+  	}
 
 	public function editVerse() {
 		$data = $_POST;
@@ -51,15 +85,8 @@ class GTMConsent
 		$consentContainer = get_option('gtm_consent_option_name')['container_0'];
 		if ( $consentContainer != null ) {
 			$consentDisclaimer = get_option('gtm_consent_option_name')['disclaimer_2'];
-			$consentAcceptDefault = get_option('gtm_consent_option_name')['accept_by_default_1'];
 			$consentBackground = get_option('gtm_consent_option_name')['background_3'];
 			$text = "";
-
-			if ( $consentAcceptDefault != true ) {
-				$consentAction = 'denied';
-			}else{
-				$consentAction = 'granted';
-			}
 
 			if ( $consentDisclaimer != '' ) {
 			// Generate GTM consent popup if discalimer text exists
@@ -74,26 +101,6 @@ class GTMConsent
 				</div>
 			</div>";
 			}
-
-			$text .= "
-			<!-- Google tag (gtag.js) -->
-			<script async src='https://www.googletagmanager.com/gtag/js?id=$consentContainer'></script>
-			<script>
-				window.dataLayer = window.dataLayer || [];
-				function gtag(){dataLayer.push(arguments);}
-
-				gtag('consent', 'default', {
-					'ad_storage': '$consentAction',
-					'ad_personalization': '$consentAction',
-					'ad_user_data': '$consentAction',
-					'analytics_storage': '$consentAction'
-				});
-
-				gtag('js', new Date());
-				gtag('config', '$consentContainer');
-			</script>
-			";
-
 			return $text;
 		}
 	}
